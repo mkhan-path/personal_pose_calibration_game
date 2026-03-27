@@ -121,82 +121,138 @@
     .done-screen p { color: #aaa; font-size: 0.9rem; }
 
     /* --- Review screen --- */
-    .review-screen { display: none; flex-direction: column; width: 100%; max-width: 800px; margin: 0 auto; padding: 0 16px 24px; }
+    .review-screen {
+      display: none; flex-direction: column; width: 100%; max-width: 800px;
+      margin: 0 auto; padding: 0 16px 24px;
+      min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    }
 
-    .score-hero { text-align: center; padding: 24px 0 16px; }
-    .score-pct { font-size: 3.5rem; font-weight: 800; line-height: 1; }
+    .score-hero { text-align: center; padding: 24px 16px 16px; }
+    .score-pct { font-size: 4rem; font-weight: 800; line-height: 1; }
     .score-pct.good { color: #2ecc71; }
     .score-pct.ok { color: #f39c12; }
     .score-pct.bad { color: #e74c3c; }
-    .score-sub { font-size: 0.95rem; color: #aaa; margin-top: 6px; }
+    .score-sub { font-size: 0.95rem; color: #aaa; margin-top: 8px; }
+
+    .score-consequence {
+      margin: 14px 0 0;
+      padding: 14px 16px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      line-height: 1.5;
+      text-align: left;
+    }
+    .score-consequence.warn {
+      background: rgba(231,76,60,0.15);
+      border: 2px solid #e74c3c;
+      color: #f87171;
+    }
+    .score-consequence.success {
+      background: rgba(46,204,113,0.15);
+      border: 2px solid #2ecc71;
+      color: #6ee7a0;
+    }
+
+    .score-followup {
+      margin: 10px 0 0;
+      padding: 14px 16px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      background: rgba(100,181,246,0.1);
+      border: 1px solid rgba(100,181,246,0.3);
+      color: #b0c4de;
+      text-align: left;
+    }
+    .score-followup strong { color: #e0e0e0; }
+    .score-followup ul {
+      margin: 6px 0 8px 4px;
+      padding-left: 18px;
+      list-style: disc;
+    }
+    .score-followup li {
+      margin-bottom: 2px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #ddd;
+    }
 
     .score-breakdown {
       display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
-      padding: 0 0 16px; font-size: 0.8rem;
+      padding: 4px 0 16px; font-size: 0.8rem;
     }
     .score-breakdown .chip {
-      padding: 4px 12px; border-radius: 20px; font-weight: 600;
+      padding: 6px 14px; border-radius: 20px; font-weight: 600;
     }
     .chip-pass { background: rgba(46,204,113,0.2); color: #2ecc71; }
     .chip-fail { background: rgba(231,76,60,0.2); color: #e74c3c; }
     .chip-unknown { background: rgba(243,156,18,0.2); color: #f39c12; }
 
-    .review-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex: 1; padding-bottom: 16px; }
+    .review-list {
+      display: flex; flex-direction: column; gap: 10px;
+      padding-bottom: 24px;
+    }
 
     .review-card {
-      display: flex; align-items: center; gap: 10px;
-      background: #16213e; border-radius: 10px; padding: 10px;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+      background: #16213e; border-radius: 12px; padding: 12px;
       border: 1px solid #0f3460;
     }
     .review-card.mismatch { border-color: #e74c3c55; }
+
+    .review-card-top {
+      display: flex; align-items: center; gap: 10px; width: 100%; min-width: 0;
+    }
     .review-card-thumb {
-      width: 56px; height: 56px; border-radius: 6px;
+      width: 64px; height: 64px; border-radius: 8px;
       object-fit: cover; background: #0a0a1a; flex-shrink: 0;
     }
     .review-card-info { flex: 1; min-width: 0; }
     .review-card-filename {
-      font-size: 0.8rem; font-weight: 600; color: #ddd;
+      font-size: 0.85rem; font-weight: 600; color: #ddd;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
-    .review-card-labels { font-size: 0.75rem; color: #999; margin-top: 2px; }
+    .review-card-labels { font-size: 0.8rem; color: #999; margin-top: 3px; line-height: 1.4; }
     .review-card-labels span { font-weight: 600; }
     .review-card-labels .lbl-pass { color: #2ecc71; }
     .review-card-labels .lbl-fail { color: #e74c3c; }
     .review-card-labels .lbl-unsure { color: #f39c12; }
     .review-card-labels .lbl-unknown { color: #f39c12; }
-    .review-card-result { font-size: 1.3rem; flex-shrink: 0; width: 32px; text-align: center; }
+    .review-card-result { font-size: 1.4rem; flex-shrink: 0; width: 32px; text-align: center; }
 
     .contest-btn {
-      min-height: 44px; min-width: 72px; padding: 8px 12px;
-      background: #e74c3c33; color: #e74c3c; border: 1px solid #e74c3c55;
-      border-radius: 8px; font-size: 0.75rem; font-weight: 700;
-      cursor: pointer; flex-shrink: 0;
+      width: 100%; min-height: 48px; padding: 10px 16px;
+      background: #e74c3c22; color: #e74c3c; border: 1px solid #e74c3c44;
+      border-radius: 10px; font-size: 0.85rem; font-weight: 700;
+      cursor: pointer;
     }
+    .contest-btn:active { background: #e74c3c33; }
     .contest-btn:disabled { opacity: 0.4; cursor: default; }
-    .contest-btn.sent { background: #2ecc7133; color: #2ecc71; border-color: #2ecc7155; }
+    .contest-btn.sent { background: #2ecc7122; color: #2ecc71; border-color: #2ecc7144; }
 
     /* Contest modal */
     .modal-overlay {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-      z-index: 100; align-items: center; justify-content: center; padding: 16px;
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      z-index: 100; align-items: flex-end; justify-content: center; padding: 0;
     }
     .modal-overlay.active { display: flex; }
     .modal-box {
-      background: #16213e; border-radius: 12px; padding: 20px;
-      width: 100%; max-width: 400px; border: 2px solid #0f3460;
+      background: #16213e; border-radius: 16px 16px 0 0; padding: 20px 16px 24px;
+      width: 100%; max-width: 500px; border-top: 2px solid #0f3460;
     }
-    .modal-box h3 { font-size: 1rem; color: #e94560; margin-bottom: 8px; }
-    .modal-box p { font-size: 0.85rem; color: #aaa; margin-bottom: 12px; }
+    .modal-box h3 { font-size: 1.05rem; color: #e94560; margin-bottom: 6px; }
+    .modal-box p { font-size: 0.85rem; color: #aaa; margin-bottom: 12px; word-break: break-all; }
     .modal-box textarea {
-      width: 100%; min-height: 100px; padding: 10px; border-radius: 8px;
+      width: 100%; min-height: 120px; padding: 12px; border-radius: 10px;
       border: 1px solid #444; background: #1a1a2e; color: #e0e0e0;
-      font-family: inherit; font-size: 0.9rem; resize: vertical;
+      font-family: inherit; font-size: 1rem; resize: vertical;
     }
     .modal-box textarea:focus { outline: none; border-color: #e94560; }
-    .modal-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .modal-actions { display: flex; gap: 8px; margin-top: 14px; }
     .modal-actions button {
-      flex: 1; min-height: 44px; border: none; border-radius: 8px;
-      font-size: 0.9rem; font-weight: 600; cursor: pointer;
+      flex: 1; min-height: 48px; border: none; border-radius: 10px;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer;
     }
     .modal-cancel { background: #2a2a4a; color: #e0e0e0; }
     .modal-submit { background: #e94560; color: #fff; }
@@ -220,9 +276,13 @@
       .nav-btn { min-width: 60px; min-height: 52px; font-size: 1.4rem; }
       .done-screen { padding: 60px; }
       .done-screen h2 { font-size: 2rem; }
-      .score-pct { font-size: 4.5rem; }
+      .score-pct { font-size: 5rem; }
       .review-screen { padding: 0 24px 24px; }
-      .review-card-thumb { width: 64px; height: 64px; }
+      .review-card-thumb { width: 72px; height: 72px; }
+      .contest-btn { width: auto; min-width: 100px; }
+      .review-card { flex-wrap: nowrap; }
+      .modal-overlay { align-items: center; padding: 16px; }
+      .modal-box { border-radius: 16px; padding: 24px; }
     }
   </style>
 </head>
@@ -300,6 +360,8 @@
     <div class="score-hero">
       <div class="score-pct" id="scorePct"></div>
       <div class="score-sub" id="scoreSub"></div>
+      <div class="score-consequence" id="scoreConsequence"></div>
+      <div class="score-followup" id="scoreFollowup"></div>
     </div>
     <div class="score-breakdown" id="scoreBreakdown"></div>
     <div class="review-list" id="reviewList"></div>
@@ -515,6 +577,22 @@
     document.getElementById('scoreSub').textContent =
       `${correct} of ${total} correct`;
 
+    const conseqEl = document.getElementById('scoreConsequence');
+    const followEl = document.getElementById('scoreFollowup');
+    if (pct <= 50) {
+      conseqEl.className = 'score-consequence warn';
+      conseqEl.innerHTML = '\u26a0\ufe0f Warning: If this were a real calibration, LS Cal would fail. You would need to redo the pose and rerun LS Cal \u2014 adding 1+ hour per robot. This delays the customer from running their parts.';
+      followEl.innerHTML = '<strong>You also still need to complete 2 more poses:</strong>' +
+        '<ul><li>TCP Pose</li><li>Cam2Cam Pose</li></ul>' +
+        'Each has its own calibration process per robot. If those are also wrong, that\u2019s an additional 30 minutes per robot on top of the LS Cal time \u2014 significantly delaying customer operations.';
+    } else {
+      conseqEl.className = 'score-consequence success';
+      conseqEl.innerHTML = '\u2705 Great job! LS Cal would run correctly with this calibration.';
+      followEl.innerHTML = '<strong>You still need to complete 2 more poses:</strong>' +
+        '<ul><li>TCP Pose</li><li>Cam2Cam Pose</li></ul>' +
+        'If either of those are wrong, cell operation gets pushed back 30 minutes per robot while they are corrected and recalibrated.';
+    }
+
     // Breakdown chips
     const breakdownEl = document.getElementById('scoreBreakdown');
     breakdownEl.innerHTML = '';
@@ -539,24 +617,24 @@
       const userClass = `lbl-${r.userLabel}`;
 
       card.innerHTML = `
-        <img class="review-card-thumb" src="${r.pair.left_url}" alt="${r.pair.filename}">
-        <div class="review-card-info">
-          <div class="review-card-filename">${r.pair.filename}</div>
-          <div class="review-card-labels">
-            Truth: <span class="${truthClass}">${r.truth}</span>
-            &nbsp;|&nbsp;
-            Yours: <span class="${userClass}">${r.userLabel}</span>
+        <div class="review-card-top">
+          <img class="review-card-thumb" src="${r.pair.left_url}" alt="${r.pair.filename}">
+          <div class="review-card-info">
+            <div class="review-card-filename">${r.pair.filename}</div>
+            <div class="review-card-labels">
+              Truth: <span class="${truthClass}">${r.truth}</span>
+              &nbsp;|&nbsp;
+              Yours: <span class="${userClass}">${r.userLabel}</span>
+            </div>
           </div>
+          <div class="review-card-result">${r.isMatch ? '<span style="color:#2ecc71">&#10003;</span>' : '<span style="color:#e74c3c">&#10007;</span>'}</div>
         </div>
-        <div class="review-card-result">${r.isMatch ? '<span style="color:#2ecc71">&#10003;</span>' : '<span style="color:#e74c3c">&#10007;</span>'}</div>
       `;
 
       if (!r.isMatch) {
         const btn = document.createElement('button');
         btn.className = 'contest-btn';
-        btn.textContent = 'Contest';
-        btn.dataset.filename = r.entry.filename;
-        btn.dataset.timestamp = r.entry.timestamp;
+        btn.textContent = 'Contest this label';
         btn.onclick = () => openContestModal(btn, r.entry.filename, r.entry.timestamp);
         card.appendChild(btn);
       }

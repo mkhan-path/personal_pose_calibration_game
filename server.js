@@ -6,7 +6,6 @@ const { google } = require('googleapis');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-const LABELS_FILE = path.join(__dirname, 'labels.json');
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -49,7 +48,6 @@ function buildPairs() {
         fs.readdirSync(rightDir).filter(f => /\.(png|jpg|jpeg|bmp|webp)$/i.test(f))
       );
 
-      // Intersection: only filenames present in both left and right
       const matched = [...leftFiles].filter(f => rightFiles.has(f)).sort();
 
       for (const filename of matched) {
@@ -57,8 +55,6 @@ function buildPairs() {
           filename,
           dataset: ds.name,
           split,
-          left_path: path.join(ds.basePath, split, 'left', filename),
-          right_path: path.join(ds.basePath, split, 'right', filename),
           left_url: `${ds.urlPrefix}/${encodeURIComponent(split)}/left/${encodeURIComponent(filename)}`,
           right_url: `${ds.urlPrefix}/${encodeURIComponent(split)}/right/${encodeURIComponent(filename)}`
         });
@@ -69,44 +65,41 @@ function buildPairs() {
   return pairs;
 }
 
-// --- Labels persistence ---
-
-function loadLabels() {
-  if (fs.existsSync(LABELS_FILE)) {
-    return JSON.parse(fs.readFileSync(LABELS_FILE, 'utf-8'));
-  }
-  return {};
-}
-
-function saveLabels(labels) {
-  fs.writeFileSync(LABELS_FILE, JSON.stringify(labels, null, 2));
-}
-
 // --- Google Sheets ---
 
 async function getSheetsClient() {
+  const keyJson = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
   const keyPath = process.env.GOOGLE_SERVICE_ACCOUNT_KEY_PATH;
-  if (!keyPath || !fs.existsSync(keyPath)) {
-    throw new Error('Service account key file not found. Set GOOGLE_SERVICE_ACCOUNT_KEY_PATH in .env');
+
+  let auth;
+  if (keyJson) {
+    const credentials = JSON.parse(keyJson);
+    auth = new google.auth.GoogleAuth({
+      credentials,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    });
+  } else if (keyPath && fs.existsSync(keyPath)) {
+    auth = new google.auth.GoogleAuth({
+      keyFile: keyPath,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    });
+  } else {
+    throw new Error('No service account credentials found. Set GOOGLE_SERVICE_ACCOUNT_KEY or GOOGLE_SERVICE_ACCOUNT_KEY_PATH');
   }
-  const auth = new google.auth.GoogleAuth({
-    keyFile: keyPath,
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-  });
+
   return google.sheets({ version: 'v4', auth });
 }
 
 async function appendToGoogleSheet(rows) {
   const sheetId = process.env.SHEET_ID;
-  if (!sheetId) throw new Error('SHEET_ID not set in .env');
+  if (!sheetId) throw new Error('SHEET_ID not set');
 
   const sheets = await getSheetsClient();
-  const columns = ['filename', 'left_path', 'right_path', 'dataset', 'split', 'label', 'timestamp'];
+  const columns = ['filename', 'dataset', 'split', 'label', 'timestamp'];
 
-  // Check if header row exists
   const existing = await sheets.spreadsheets.values.get({
     spreadsheetId: sheetId,
-    range: 'Sheet1!A1:G1',
+    range: 'Sheet1!A1:E1',
   });
 
   const values = [];
@@ -120,7 +113,7 @@ async function appendToGoogleSheet(rows) {
 
   await sheets.spreadsheets.values.append({
     spreadsheetId: sheetId,
-    range: 'Sheet1!A:G',
+    range: 'Sheet1!A:E',
     valueInputOption: 'RAW',
     insertDataOption: 'INSERT_ROWS',
     requestBody: { values },
@@ -133,49 +126,16 @@ async function appendToGoogleSheet(rows) {
 
 app.get('/api/pairs', (req, res) => {
   const pairs = buildPairs();
-  const labels = loadLabels();
-  res.json({ pairs, labels });
-});
-
-app.post('/api/label', (req, res) => {
-  const { key, label } = req.body;
-  if (!key || !label) {
-    return res.status(400).json({ error: 'key and label required' });
-  }
-  const labels = loadLabels();
-  labels[key] = {
-    ...req.body,
-    timestamp: new Date().toISOString()
-  };
-  saveLabels(labels);
-  res.json({ ok: true });
-});
-
-app.get('/api/export', (req, res) => {
-  const labels = loadLabels();
-  const rows = Object.values(labels);
-  if (rows.length === 0) {
-    return res.status(400).send('No labels to export');
-  }
-
-  const columns = ['filename', 'left_path', 'right_path', 'dataset', 'split', 'label', 'timestamp'];
-  const csvHeader = columns.join(',');
-  const csvRows = rows.map(r =>
-    columns.map(c => `"${(r[c] || '').replace(/"/g, '""')}"`).join(',')
-  );
-
-  res.setHeader('Content-Type', 'text/csv');
-  res.setHeader('Content-Disposition', 'attachment; filename="labels.csv"');
-  res.send([csvHeader, ...csvRows].join('\n'));
+  res.json({ pairs });
 });
 
 app.post('/api/sync-sheets', async (req, res) => {
   try {
-    const labels = loadLabels();
-    const rows = Object.values(labels);
-    if (rows.length === 0) {
+    const { labels } = req.body;
+    if (!labels || Object.keys(labels).length === 0) {
       return res.status(400).json({ error: 'No labels to sync' });
     }
+    const rows = Object.values(labels);
     const count = await appendToGoogleSheet(rows);
     res.json({ ok: true, rowsAppended: count });
   } catch (err) {
@@ -184,8 +144,14 @@ app.post('/api/sync-sheets', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  const pairs = buildPairs();
-  console.log(`Pose Calibration Labeling Tool running at http://localhost:${PORT}`);
-  console.log(`Found ${pairs.length} image pairs across ${DATASETS.length} datasets`);
-});
+// Start server only when run directly (not on Vercel)
+if (require.main === module) {
+  app.listen(PORT, () => {
+    const pairs = buildPairs();
+    console.log(`Pose Calibration Labeling Tool running at http://localhost:${PORT}`);
+    console.log(`Found ${pairs.length} image pairs across ${DATASETS.length} datasets`);
+  });
+}
+
+// Export for Vercel serverless
+module.exports = app;

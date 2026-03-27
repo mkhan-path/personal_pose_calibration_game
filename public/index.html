@@ -281,15 +281,27 @@
   </div>
 
 <script>
+  const STORAGE_KEY = 'pose_calibration_labels';
   let pairs = [];
   let labels = {};
   let currentIndex = 0;
+
+  function loadLabels() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return stored ? JSON.parse(stored) : {};
+    } catch { return {}; }
+  }
+
+  function saveLabels() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(labels));
+  }
 
   async function init() {
     const res = await fetch('/api/pairs');
     const data = await res.json();
     pairs = data.pairs;
-    labels = data.labels;
+    labels = loadLabels();
 
     // Resume: find first unlabeled pair
     const firstUnlabeled = pairs.findIndex(p => !labels[pairKey(p)]);
@@ -352,37 +364,27 @@
     document.getElementById('prevBtn').disabled = currentIndex === 0;
   }
 
-  async function submitLabel(label) {
+  function submitLabel(label) {
     if (pairs.length === 0) return;
     const pair = pairs[currentIndex];
     const key = pairKey(pair);
 
-    const body = {
-      key,
+    labels[key] = {
       filename: pair.filename,
-      left_path: pair.left_path,
-      right_path: pair.right_path,
       dataset: pair.dataset,
       split: pair.split,
-      label
+      label,
+      timestamp: new Date().toISOString()
     };
-
-    labels[key] = { ...body, timestamp: new Date().toISOString() };
+    saveLabels();
     render();
-
-    await fetch('/api/label', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
 
     // Auto-advance
     if (currentIndex < pairs.length - 1) {
       currentIndex++;
       render();
     } else {
-      render(); // show done screen
-      // Auto-sync when all pairs are labeled
+      render();
       if (Object.keys(labels).length === pairs.length) {
         syncToSheets();
       }
@@ -404,7 +406,23 @@
   }
 
   function exportCSV() {
-    window.location.href = '/api/export';
+    const rows = Object.values(labels);
+    if (rows.length === 0) { alert('No labels to export'); return; }
+
+    const columns = ['filename', 'dataset', 'split', 'label', 'timestamp'];
+    const csvHeader = columns.join(',');
+    const csvRows = rows.map(r =>
+      columns.map(c => `"${(r[c] || '').replace(/"/g, '""')}"`).join(',')
+    );
+    const csv = [csvHeader, ...csvRows].join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'labels.csv';
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   async function syncToSheets() {
@@ -413,7 +431,11 @@
     try {
       if (btn) btn.disabled = true;
       if (statusEl) statusEl.textContent = 'Syncing to Google Sheets...';
-      const res = await fetch('/api/sync-sheets', { method: 'POST' });
+      const res = await fetch('/api/sync-sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ labels })
+      });
       const data = await res.json();
       if (data.ok) {
         const msg = `Synced ${data.rowsAppended} rows to Google Sheets`;

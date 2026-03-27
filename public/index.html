@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pose Calibration Labeling Tool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Board Calibration Pose Labeling</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -11,217 +11,292 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: #1a1a2e;
       color: #e0e0e0;
-      min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      overflow-x: hidden;
     }
 
+    /* --- Banner --- */
+    .banner {
+      width: 100%;
+      padding: 12px 16px;
+      background: #0f3460;
+      text-align: center;
+      border-bottom: 1px solid #1a4a8a;
+    }
+    .banner-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .banner-subtitle {
+      font-size: 0.8rem;
+      color: #aac4e0;
+      line-height: 1.4;
+    }
+    .banner a {
+      color: #64b5f6;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .banner a:hover { text-decoration: underline; }
+
+    /* --- Header bar --- */
     header {
       width: 100%;
-      padding: 16px 24px;
+      padding: 10px 16px;
       background: #16213e;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 2px solid #0f3460;
+      gap: 8px;
+      flex-wrap: wrap;
     }
-
-    header h1 { font-size: 1.3rem; color: #e94560; }
-
-    .header-right {
+    .header-left {
       display: flex;
-      gap: 12px;
       align-items: center;
+      gap: 12px;
+      min-width: 0;
     }
-
-    .header-right button {
-      padding: 8px 16px;
+    .header-left span { font-size: 0.85rem; color: #aaa; white-space: nowrap; }
+    #syncBtn {
+      padding: 10px 16px;
+      min-height: 44px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       font-size: 0.85rem;
       font-weight: 600;
-    }
-
-    #exportBtn {
       background: #0f3460;
       color: #e0e0e0;
+      white-space: nowrap;
     }
-    #exportBtn:hover { background: #1a4a8a; }
+    #syncBtn:hover:not(:disabled) { background: #1a4a8a; }
+    #syncBtn:disabled { opacity: 0.4; cursor: default; }
 
+    /* --- Progress --- */
     .progress-section {
       width: 100%;
-      max-width: 1200px;
-      padding: 16px 24px 0;
+      padding: 10px 16px 0;
     }
-
     .progress-info {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 6px;
-      font-size: 0.9rem;
+      margin-bottom: 4px;
+      font-size: 0.85rem;
       color: #aaa;
     }
-
     .progress-bar-bg {
       width: 100%;
-      height: 8px;
+      height: 6px;
       background: #2a2a4a;
-      border-radius: 4px;
+      border-radius: 3px;
       overflow: hidden;
     }
-
     .progress-bar-fill {
       height: 100%;
       background: linear-gradient(90deg, #e94560, #0f3460);
       transition: width 0.3s ease;
-      border-radius: 4px;
+      border-radius: 3px;
     }
 
-    .pair-info {
-      text-align: center;
-      padding: 12px;
-      font-size: 0.85rem;
+    /* --- Stats --- */
+    .stats {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      font-size: 0.8rem;
       color: #888;
-      word-break: break-all;
+      padding: 6px 16px;
     }
 
+    /* --- Main content area --- */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* --- Images --- */
     .images-container {
       display: flex;
-      gap: 24px;
-      padding: 8px 24px;
-      max-width: 1200px;
+      gap: 8px;
+      padding: 4px 16px;
       width: 100%;
       flex: 1;
       min-height: 0;
     }
-
     .image-panel {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       background: #16213e;
-      border-radius: 12px;
-      padding: 12px;
+      border-radius: 8px;
+      padding: 8px;
       border: 2px solid #0f3460;
+      min-width: 0;
+      overflow: hidden;
     }
-
     .image-panel h2 {
-      font-size: 1rem;
-      margin-bottom: 8px;
+      font-size: 0.85rem;
+      margin-bottom: 4px;
       color: #e94560;
     }
-
     .image-panel img {
-      max-width: 100%;
-      max-height: 55vh;
+      width: 100%;
+      max-height: 45vh;
       object-fit: contain;
-      border-radius: 8px;
+      border-radius: 6px;
       background: #0a0a1a;
     }
 
+    /* --- Pair info --- */
+    .pair-info {
+      text-align: center;
+      padding: 4px 16px;
+      font-size: 0.75rem;
+      color: #666;
+      word-break: break-all;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* --- Controls --- */
     .controls {
-      padding: 20px 24px 24px;
+      padding: 8px 16px 12px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 12px;
+      gap: 8px;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
-    .btn-row {
+    .label-row {
       display: flex;
-      gap: 16px;
+      gap: 8px;
+      width: 100%;
     }
-
     .label-btn {
-      padding: 14px 40px;
-      font-size: 1.2rem;
+      flex: 1;
+      min-height: 52px;
+      font-size: 1rem;
       font-weight: 700;
       border: none;
       border-radius: 10px;
       cursor: pointer;
       transition: transform 0.1s, box-shadow 0.1s;
       color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
-
     .label-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.4);
     }
-
     .label-btn:active { transform: translateY(0); }
-
     .btn-pass  { background: #2ecc71; }
     .btn-fail  { background: #e74c3c; }
     .btn-unsure { background: #f39c12; }
-
     .label-btn .shortcut {
-      display: block;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       opacity: 0.7;
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
     .nav-row {
       display: flex;
-      gap: 12px;
+      gap: 8px;
       align-items: center;
+      width: 100%;
     }
-
     .nav-btn {
-      padding: 8px 20px;
+      min-width: 52px;
+      min-height: 48px;
       background: #2a2a4a;
       color: #e0e0e0;
       border: 1px solid #444;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 1.3rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-
-    .nav-btn:hover { background: #3a3a5a; }
-    .nav-btn:disabled { opacity: 0.3; cursor: default; }
+    .nav-btn:hover:not(:disabled) { background: #3a3a5a; }
+    .nav-btn:disabled { opacity: 0.25; cursor: default; }
 
     .current-label {
-      padding: 4px 12px;
+      flex: 1;
+      text-align: center;
+      padding: 6px 8px;
       border-radius: 6px;
       font-weight: 600;
       font-size: 0.85rem;
     }
-
     .current-label.pass  { background: #2ecc71; color: #fff; }
     .current-label.fail  { background: #e74c3c; color: #fff; }
     .current-label.unsure { background: #f39c12; color: #fff; }
     .current-label.none  { background: #444; color: #aaa; }
 
+    /* --- Done screen --- */
     .done-screen {
       display: none;
       text-align: center;
-      padding: 60px;
+      padding: 48px 24px;
     }
+    .done-screen h2 { font-size: 1.6rem; color: #2ecc71; margin-bottom: 12px; }
+    .done-screen p { color: #aaa; font-size: 0.9rem; }
 
-    .done-screen h2 { font-size: 2rem; color: #2ecc71; margin-bottom: 16px; }
-
-    .stats {
-      display: flex;
-      gap: 24px;
-      justify-content: center;
-      font-size: 0.85rem;
-      color: #888;
-      padding-bottom: 8px;
+    /* --- Desktop (>= 600px) --- */
+    @media (min-width: 600px) {
+      .banner { padding: 14px 24px; }
+      .banner-title { font-size: 1.25rem; }
+      .banner-subtitle { font-size: 0.85rem; }
+      header { padding: 12px 24px; }
+      .progress-section { padding: 14px 24px 0; }
+      .stats { font-size: 0.85rem; padding: 8px 24px; }
+      .images-container { gap: 16px; padding: 6px 24px; }
+      .image-panel { padding: 12px; border-radius: 12px; }
+      .image-panel h2 { font-size: 1rem; margin-bottom: 8px; }
+      .image-panel img { max-height: 55vh; }
+      .pair-info { font-size: 0.8rem; padding: 8px 24px; white-space: normal; }
+      .controls { padding: 12px 24px 20px; gap: 10px; }
+      .label-btn { min-height: 56px; font-size: 1.15rem; }
+      .nav-btn { min-width: 60px; min-height: 52px; font-size: 1.4rem; }
+      .done-screen { padding: 60px; }
+      .done-screen h2 { font-size: 2rem; }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Pose Calibration Labeling Tool</h1>
-    <div class="header-right">
-      <span id="labeledCount"></span>
-      <button id="exportBtn" onclick="exportCSV()">Export CSV</button>
-      <button id="syncBtn" onclick="syncToSheets()" style="background:#0f3460;color:#e0e0e0;">Sync to Google Sheets</button>
+  <div class="banner">
+    <div class="banner-title">Board Calibration Pose Labeling</div>
+    <div class="banner-subtitle">
+      This tool is for <strong>calibration_board_home_pose</strong> only &mdash;
+      used for local scanner calibration.
+      <a href="https://pathrobotics.atlassian.net/wiki/spaces/CBU/pages/3279814738/Pose+Requirements#calibration_board_home_pose" target="_blank" rel="noopener">What is this?</a>
     </div>
+  </div>
+
+  <header>
+    <div class="header-left">
+      <span id="labeledCount"></span>
+    </div>
+    <button id="syncBtn" onclick="syncToSheets()">Sync to Sheets</button>
   </header>
 
   <div class="progress-section">
@@ -234,50 +309,45 @@
     </div>
   </div>
 
-  <div class="pair-info" id="pairInfo"></div>
-
   <div class="stats" id="stats"></div>
 
-  <div class="images-container" id="imagesContainer">
-    <div class="image-panel">
-      <h2>Left Camera</h2>
-      <img id="leftImg" alt="Left camera image">
+  <div class="main-content">
+    <div class="images-container" id="imagesContainer">
+      <div class="image-panel">
+        <h2>Left</h2>
+        <img id="leftImg" alt="Left camera image">
+      </div>
+      <div class="image-panel">
+        <h2>Right</h2>
+        <img id="rightImg" alt="Right camera image">
+      </div>
     </div>
-    <div class="image-panel">
-      <h2>Right Camera</h2>
-      <img id="rightImg" alt="Right camera image">
-    </div>
+
+    <div class="pair-info" id="pairInfo"></div>
   </div>
 
   <div class="controls">
-    <div class="btn-row">
+    <div class="label-row">
       <button class="label-btn btn-pass" onclick="submitLabel('pass')">
-        ✅ Pass<span class="shortcut">[P]</span>
+        Pass<span class="shortcut">[P]</span>
       </button>
       <button class="label-btn btn-fail" onclick="submitLabel('fail')">
-        ❌ Fail<span class="shortcut">[F]</span>
+        Fail<span class="shortcut">[F]</span>
       </button>
       <button class="label-btn btn-unsure" onclick="submitLabel('unsure')">
-        ❓ Unsure<span class="shortcut">[U]</span>
+        Unsure<span class="shortcut">[U]</span>
       </button>
     </div>
     <div class="nav-row">
-      <button class="nav-btn" id="prevBtn" onclick="goBack()" disabled>← Back</button>
+      <button class="nav-btn" id="prevBtn" onclick="goBack()" disabled>&lsaquo;</button>
       <span class="current-label none" id="currentLabel">No label</span>
-      <button class="nav-btn" id="nextBtn" onclick="goNext()">Next →</button>
+      <button class="nav-btn" id="nextBtn" onclick="goNext()">&rsaquo;</button>
     </div>
   </div>
 
   <div class="done-screen" id="doneScreen">
-    <h2>All Done! 🎉</h2>
-    <p>You've labeled all image pairs.</p>
-    <button id="exportBtnDone" class="label-btn btn-pass" onclick="exportCSV()" style="margin-top:24px;">
-      Export CSV
-    </button>
-    <button class="label-btn btn-pass" onclick="syncToSheets()" style="margin-top:12px;background:#0f3460;">
-      Sync to Google Sheets
-    </button>
-    <p id="doneSheetStatus" style="margin-top:12px;font-size:0.9rem;color:#888;"></p>
+    <h2 id="doneTitle">Submitting...</h2>
+    <p id="doneMessage">Sending labels to Google Sheets.</p>
   </div>
 
 <script>
@@ -303,7 +373,6 @@
     pairs = data.pairs;
     labels = loadLabels();
 
-    // Resume: find first unlabeled pair
     const firstUnlabeled = pairs.findIndex(p => !labels[pairKey(p)]);
     currentIndex = firstUnlabeled === -1 ? pairs.length - 1 : firstUnlabeled;
 
@@ -323,18 +392,15 @@
     const labeledCount = Object.keys(labels).length;
     const total = pairs.length;
 
-    // Update progress
     document.getElementById('pairCounter').textContent = `${currentIndex + 1} / ${total}`;
     document.getElementById('progressBar').style.width = `${(labeledCount / total) * 100}%`;
     document.getElementById('labeledCount').textContent = `${labeledCount} labeled`;
 
-    // Stats
     const counts = { pass: 0, fail: 0, unsure: 0 };
     for (const l of Object.values(labels)) counts[l.label] = (counts[l.label] || 0) + 1;
     document.getElementById('stats').textContent =
       `Pass: ${counts.pass}  |  Fail: ${counts.fail}  |  Unsure: ${counts.unsure}`;
 
-    // Check if done
     const allDone = labeledCount === total;
     document.getElementById('doneScreen').style.display =
       (allDone && currentIndex >= total - 1) ? 'block' : 'none';
@@ -345,10 +411,8 @@
     document.getElementById('leftImg').src = pair.left_url;
     document.getElementById('rightImg').src = pair.right_url;
     document.getElementById('datasetInfo').textContent = `${pair.dataset} / ${pair.split}`;
-    document.getElementById('pairInfo').textContent =
-      `${pair.filename}  —  Left: ${pair.left_url}  |  Right: ${pair.right_url}`;
+    document.getElementById('pairInfo').textContent = pair.filename;
 
-    // Current label indicator
     const key = pairKey(pair);
     const existing = labels[key];
     const labelEl = document.getElementById('currentLabel');
@@ -360,7 +424,6 @@
       labelEl.className = 'current-label none';
     }
 
-    // Nav buttons
     document.getElementById('prevBtn').disabled = currentIndex === 0;
   }
 
@@ -379,16 +442,67 @@
     saveLabels();
     render();
 
-    // Auto-advance
     if (currentIndex < pairs.length - 1) {
       currentIndex++;
       render();
-    } else {
-      render();
-      if (Object.keys(labels).length === pairs.length) {
-        syncToSheets();
-      }
+    } else if (Object.keys(labels).length === pairs.length) {
+      autoSyncOnComplete();
     }
+  }
+
+  async function autoSyncOnComplete() {
+    const titleEl = document.getElementById('doneTitle');
+    const msgEl = document.getElementById('doneMessage');
+    titleEl.textContent = 'Submitting...';
+    titleEl.style.color = '#f39c12';
+    msgEl.textContent = 'Sending labels to Google Sheets.';
+
+    try {
+      const res = await fetch('/api/sync-sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ labels })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        titleEl.textContent = 'Submitted! Thank you.';
+        titleEl.style.color = '#2ecc71';
+        msgEl.textContent = `${data.rowsAppended} rows synced to Google Sheets.`;
+      } else {
+        titleEl.textContent = 'Sync failed';
+        titleEl.style.color = '#e74c3c';
+        msgEl.textContent = data.error;
+      }
+    } catch (err) {
+      titleEl.textContent = 'Sync failed';
+      titleEl.style.color = '#e74c3c';
+      msgEl.textContent = err.message;
+    }
+  }
+
+  async function syncToSheets() {
+    const btn = document.getElementById('syncBtn');
+    if (Object.keys(labels).length === 0) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Syncing...';
+
+    try {
+      const res = await fetch('/api/sync-sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ labels })
+      });
+      const data = await res.json();
+      btn.textContent = data.ok ? 'Synced!' : 'Sync failed';
+    } catch {
+      btn.textContent = 'Sync failed';
+    }
+
+    setTimeout(() => {
+      btn.textContent = 'Sync to Sheets';
+      btn.disabled = false;
+    }, 5000);
   }
 
   function goBack() {
@@ -405,57 +519,6 @@
     }
   }
 
-  function exportCSV() {
-    const rows = Object.values(labels);
-    if (rows.length === 0) { alert('No labels to export'); return; }
-
-    const columns = ['filename', 'dataset', 'split', 'label', 'timestamp'];
-    const csvHeader = columns.join(',');
-    const csvRows = rows.map(r =>
-      columns.map(c => `"${(r[c] || '').replace(/"/g, '""')}"`).join(',')
-    );
-    const csv = [csvHeader, ...csvRows].join('\n');
-
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'labels.csv';
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  async function syncToSheets() {
-    const btn = document.getElementById('syncBtn');
-    const statusEl = document.getElementById('doneSheetStatus');
-    try {
-      if (btn) btn.disabled = true;
-      if (statusEl) statusEl.textContent = 'Syncing to Google Sheets...';
-      const res = await fetch('/api/sync-sheets', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ labels })
-      });
-      const data = await res.json();
-      if (data.ok) {
-        const msg = `Synced ${data.rowsAppended} rows to Google Sheets`;
-        alert(msg);
-        if (statusEl) statusEl.textContent = msg;
-      } else {
-        const msg = `Sync failed: ${data.error}`;
-        alert(msg);
-        if (statusEl) statusEl.textContent = msg;
-      }
-    } catch (err) {
-      const msg = `Sync error: ${err.message}`;
-      alert(msg);
-      if (statusEl) statusEl.textContent = msg;
-    } finally {
-      if (btn) btn.disabled = false;
-    }
-  }
-
-  // Keyboard shortcuts
   document.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
     switch (e.key.toLowerCase()) {

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pose Calibration Labeling Tool</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      padding: 16px 24px;
+      background: #16213e;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0f3460;
+    }
+
+    header h1 { font-size: 1.3rem; color: #e94560; }
+
+    .header-right {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .header-right button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    #exportBtn {
+      background: #0f3460;
+      color: #e0e0e0;
+    }
+    #exportBtn:hover { background: #1a4a8a; }
+
+    .progress-section {
+      width: 100%;
+      max-width: 1200px;
+      padding: 16px 24px 0;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #2a2a4a;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #e94560, #0f3460);
+      transition: width 0.3s ease;
+      border-radius: 4px;
+    }
+
+    .pair-info {
+      text-align: center;
+      padding: 12px;
+      font-size: 0.85rem;
+      color: #888;
+      word-break: break-all;
+    }
+
+    .images-container {
+      display: flex;
+      gap: 24px;
+      padding: 8px 24px;
+      max-width: 1200px;
+      width: 100%;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .image-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #16213e;
+      border-radius: 12px;
+      padding: 12px;
+      border: 2px solid #0f3460;
+    }
+
+    .image-panel h2 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: #e94560;
+    }
+
+    .image-panel img {
+      max-width: 100%;
+      max-height: 55vh;
+      object-fit: contain;
+      border-radius: 8px;
+      background: #0a0a1a;
+    }
+
+    .controls {
+      padding: 20px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .label-btn {
+      padding: 14px 40px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+      color: #fff;
+    }
+
+    .label-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+
+    .label-btn:active { transform: translateY(0); }
+
+    .btn-pass  { background: #2ecc71; }
+    .btn-fail  { background: #e74c3c; }
+    .btn-unsure { background: #f39c12; }
+
+    .label-btn .shortcut {
+      display: block;
+      font-size: 0.7rem;
+      opacity: 0.7;
+      margin-top: 2px;
+    }
+
+    .nav-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .nav-btn {
+      padding: 8px 20px;
+      background: #2a2a4a;
+      color: #e0e0e0;
+      border: 1px solid #444;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .nav-btn:hover { background: #3a3a5a; }
+    .nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+    .current-label {
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .current-label.pass  { background: #2ecc71; color: #fff; }
+    .current-label.fail  { background: #e74c3c; color: #fff; }
+    .current-label.unsure { background: #f39c12; color: #fff; }
+    .current-label.none  { background: #444; color: #aaa; }
+
+    .done-screen {
+      display: none;
+      text-align: center;
+      padding: 60px;
+    }
+
+    .done-screen h2 { font-size: 2rem; color: #2ecc71; margin-bottom: 16px; }
+
+    .stats {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      font-size: 0.85rem;
+      color: #888;
+      padding-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Pose Calibration Labeling Tool</h1>
+    <div class="header-right">
+      <span id="labeledCount"></span>
+      <button id="exportBtn" onclick="exportCSV()">Export CSV</button>
+      <button id="syncBtn" onclick="syncToSheets()" style="background:#0f3460;color:#e0e0e0;">Sync to Google Sheets</button>
+    </div>
+  </header>
+
+  <div class="progress-section">
+    <div class="progress-info">
+      <span id="pairCounter">0 / 0</span>
+      <span id="datasetInfo"></span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="pair-info" id="pairInfo"></div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="images-container" id="imagesContainer">
+    <div class="image-panel">
+      <h2>Left Camera</h2>
+      <img id="leftImg" alt="Left camera image">
+    </div>
+    <div class="image-panel">
+      <h2>Right Camera</h2>
+      <img id="rightImg" alt="Right camera image">
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="btn-row">
+      <button class="label-btn btn-pass" onclick="submitLabel('pass')">
+        ✅ Pass<span class="shortcut">[P]</span>
+      </button>
+      <button class="label-btn btn-fail" onclick="submitLabel('fail')">
+        ❌ Fail<span class="shortcut">[F]</span>
+      </button>
+      <button class="label-btn btn-unsure" onclick="submitLabel('unsure')">
+        ❓ Unsure<span class="shortcut">[U]</span>
+      </button>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" id="prevBtn" onclick="goBack()" disabled>← Back</button>
+      <span class="current-label none" id="currentLabel">No label</span>
+      <button class="nav-btn" id="nextBtn" onclick="goNext()">Next →</button>
+    </div>
+  </div>
+
+  <div class="done-screen" id="doneScreen">
+    <h2>All Done! 🎉</h2>
+    <p>You've labeled all image pairs.</p>
+    <button id="exportBtnDone" class="label-btn btn-pass" onclick="exportCSV()" style="margin-top:24px;">
+      Export CSV
+    </button>
+    <button class="label-btn btn-pass" onclick="syncToSheets()" style="margin-top:12px;background:#0f3460;">
+      Sync to Google Sheets
+    </button>
+    <p id="doneSheetStatus" style="margin-top:12px;font-size:0.9rem;color:#888;"></p>
+  </div>
+
+<script>
+  let pairs = [];
+  let labels = {};
+  let currentIndex = 0;
+
+  async function init() {
+    const res = await fetch('/api/pairs');
+    const data = await res.json();
+    pairs = data.pairs;
+    labels = data.labels;
+
+    // Resume: find first unlabeled pair
+    const firstUnlabeled = pairs.findIndex(p => !labels[pairKey(p)]);
+    currentIndex = firstUnlabeled === -1 ? pairs.length - 1 : firstUnlabeled;
+
+    render();
+  }
+
+  function pairKey(pair) {
+    return `${pair.dataset}/${pair.split}/${pair.filename}`;
+  }
+
+  function render() {
+    if (pairs.length === 0) {
+      document.getElementById('pairInfo').textContent = 'No image pairs found.';
+      return;
+    }
+
+    const labeledCount = Object.keys(labels).length;
+    const total = pairs.length;
+
+    // Update progress
+    document.getElementById('pairCounter').textContent = `${currentIndex + 1} / ${total}`;
+    document.getElementById('progressBar').style.width = `${(labeledCount / total) * 100}%`;
+    document.getElementById('labeledCount').textContent = `${labeledCount} labeled`;
+
+    // Stats
+    const counts = { pass: 0, fail: 0, unsure: 0 };
+    for (const l of Object.values(labels)) counts[l.label] = (counts[l.label] || 0) + 1;
+    document.getElementById('stats').textContent =
+      `Pass: ${counts.pass}  |  Fail: ${counts.fail}  |  Unsure: ${counts.unsure}`;
+
+    // Check if done
+    const allDone = labeledCount === total;
+    document.getElementById('doneScreen').style.display =
+      (allDone && currentIndex >= total - 1) ? 'block' : 'none';
+
+    const pair = pairs[currentIndex];
+    if (!pair) return;
+
+    document.getElementById('leftImg').src = pair.left_url;
+    document.getElementById('rightImg').src = pair.right_url;
+    document.getElementById('datasetInfo').textContent = `${pair.dataset} / ${pair.split}`;
+    document.getElementById('pairInfo').textContent =
+      `${pair.filename}  —  Left: ${pair.left_url}  |  Right: ${pair.right_url}`;
+
+    // Current label indicator
+    const key = pairKey(pair);
+    const existing = labels[key];
+    const labelEl = document.getElementById('currentLabel');
+    if (existing) {
+      labelEl.textContent = existing.label.toUpperCase();
+      labelEl.className = `current-label ${existing.label}`;
+    } else {
+      labelEl.textContent = 'No label';
+      labelEl.className = 'current-label none';
+    }
+
+    // Nav buttons
+    document.getElementById('prevBtn').disabled = currentIndex === 0;
+  }
+
+  async function submitLabel(label) {
+    if (pairs.length === 0) return;
+    const pair = pairs[currentIndex];
+    const key = pairKey(pair);
+
+    const body = {
+      key,
+      filename: pair.filename,
+      left_path: pair.left_path,
+      right_path: pair.right_path,
+      dataset: pair.dataset,
+      split: pair.split,
+      label
+    };
+
+    labels[key] = { ...body, timestamp: new Date().toISOString() };
+    render();
+
+    await fetch('/api/label', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    // Auto-advance
+    if (currentIndex < pairs.length - 1) {
+      currentIndex++;
+      render();
+    } else {
+      render(); // show done screen
+      // Auto-sync when all pairs are labeled
+      if (Object.keys(labels).length === pairs.length) {
+        syncToSheets();
+      }
+    }
+  }
+
+  function goBack() {
+    if (currentIndex > 0) {
+      currentIndex--;
+      render();
+    }
+  }
+
+  function goNext() {
+    if (currentIndex < pairs.length - 1) {
+      currentIndex++;
+      render();
+    }
+  }
+
+  function exportCSV() {
+    window.location.href = '/api/export';
+  }
+
+  async function syncToSheets() {
+    const btn = document.getElementById('syncBtn');
+    const statusEl = document.getElementById('doneSheetStatus');
+    try {
+      if (btn) btn.disabled = true;
+      if (statusEl) statusEl.textContent = 'Syncing to Google Sheets...';
+      const res = await fetch('/api/sync-sheets', { method: 'POST' });
+      const data = await res.json();
+      if (data.ok) {
+        const msg = `Synced ${data.rowsAppended} rows to Google Sheets`;
+        alert(msg);
+        if (statusEl) statusEl.textContent = msg;
+      } else {
+        const msg = `Sync failed: ${data.error}`;
+        alert(msg);
+        if (statusEl) statusEl.textContent = msg;
+      }
+    } catch (err) {
+      const msg = `Sync error: ${err.message}`;
+      alert(msg);
+      if (statusEl) statusEl.textContent = msg;
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    switch (e.key.toLowerCase()) {
+      case 'p': submitLabel('pass'); break;
+      case 'f': submitLabel('fail'); break;
+      case 'u': submitLabel('unsure'); break;
+      case 'arrowleft': goBack(); break;
+      case 'arrowright': goNext(); break;
+    }
+  });
+
+  init();
+</script>
+</body>
+</html>

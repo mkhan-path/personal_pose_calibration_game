@@ -115,6 +115,21 @@
     .current-label.unsure { background: #f39c12; color: #fff; }
     .current-label.none  { background: #444; color: #aaa; }
 
+    /* --- Resume prompt --- */
+    .resume-screen {
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      flex: 1; padding: 32px 16px; text-align: center;
+    }
+    .resume-screen h2 { font-size: 1.4rem; color: #fff; margin-bottom: 8px; }
+    .resume-screen p { font-size: 0.95rem; color: #aaa; margin-bottom: 24px; line-height: 1.5; }
+    .resume-actions { display: flex; gap: 10px; width: 100%; max-width: 340px; }
+    .resume-btn {
+      flex: 1; min-height: 52px; border: none; border-radius: 10px;
+      font-size: 1rem; font-weight: 700; cursor: pointer; color: #fff;
+    }
+    .resume-btn.continue { background: #2ecc71; }
+    .resume-btn.fresh { background: #e74c3c; }
+
     /* --- Done screen (submitting state) --- */
     .done-screen { display: none; text-align: center; padding: 48px 24px; }
     .done-screen h2 { font-size: 1.6rem; color: #2ecc71; margin-bottom: 12px; }
@@ -193,6 +208,14 @@
       display: flex; flex-direction: column; gap: 10px;
       padding-bottom: 24px;
     }
+
+    .start-over-btn {
+      width: 100%; min-height: 52px; margin-top: 8px;
+      background: #2a2a4a; color: #e0e0e0; border: 1px solid #444;
+      border-radius: 10px; font-size: 1rem; font-weight: 700;
+      cursor: pointer;
+    }
+    .start-over-btn:hover { background: #3a3a5a; }
 
     .review-card {
       display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
@@ -304,7 +327,16 @@
     <button id="syncBtn" onclick="syncToSheets()">Sync to Sheets</button>
   </header>
 
-  <div id="labelingUI">
+  <div class="resume-screen" id="resumeScreen">
+    <h2>Welcome back!</h2>
+    <p id="resumeMessage"></p>
+    <div class="resume-actions">
+      <button class="resume-btn continue" onclick="resumeSession()">Continue</button>
+      <button class="resume-btn fresh" onclick="startFresh()">Start Fresh</button>
+    </div>
+  </div>
+
+  <div id="labelingUI" style="display:none">
     <div class="progress-section">
       <div class="progress-info">
         <span id="pairCounter">0 / 0</span>
@@ -365,6 +397,7 @@
     </div>
     <div class="score-breakdown" id="scoreBreakdown"></div>
     <div class="review-list" id="reviewList"></div>
+    <button class="start-over-btn" onclick="startOver()">Start Over</button>
   </div>
 
   <!-- Contest modal -->
@@ -402,11 +435,51 @@
     const res = await fetch('/api/pairs');
     const data = await res.json();
     pairs = data.pairs;
-    labels = loadLabels();
 
+    const savedLabels = loadLabels();
+    const savedCount = Object.keys(savedLabels).length;
+
+    if (savedCount > 0) {
+      // Show resume prompt
+      document.getElementById('labelingUI').style.display = 'none';
+      document.getElementById('resumeScreen').style.display = 'flex';
+      document.getElementById('resumeMessage').textContent =
+        `You have a session in progress (${savedCount} of ${pairs.length} pairs labeled).`;
+    } else {
+      // Fresh start
+      labels = {};
+      currentIndex = 0;
+      beginLabeling();
+    }
+  }
+
+  function resumeSession() {
+    labels = loadLabels();
     const firstUnlabeled = pairs.findIndex(p => !labels[pairKey(p)]);
     currentIndex = firstUnlabeled === -1 ? pairs.length - 1 : firstUnlabeled;
+    document.getElementById('resumeScreen').style.display = 'none';
+    beginLabeling();
+  }
 
+  function startFresh() {
+    localStorage.removeItem(STORAGE_KEY);
+    labels = {};
+    currentIndex = 0;
+    document.getElementById('resumeScreen').style.display = 'none';
+    beginLabeling();
+  }
+
+  function startOver() {
+    localStorage.removeItem(STORAGE_KEY);
+    labels = {};
+    currentIndex = 0;
+    document.getElementById('reviewScreen').style.display = 'none';
+    document.getElementById('doneScreen').style.display = 'none';
+    beginLabeling();
+  }
+
+  function beginLabeling() {
+    document.getElementById('labelingUI').style.display = 'block';
     render();
   }
 

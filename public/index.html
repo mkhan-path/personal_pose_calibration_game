@@ -25,22 +25,9 @@
       text-align: center;
       border-bottom: 1px solid #1a4a8a;
     }
-    .banner-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 4px;
-    }
-    .banner-subtitle {
-      font-size: 0.8rem;
-      color: #aac4e0;
-      line-height: 1.4;
-    }
-    .banner a {
-      color: #64b5f6;
-      text-decoration: none;
-      font-weight: 600;
-    }
+    .banner-title { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .banner-subtitle { font-size: 0.8rem; color: #aac4e0; line-height: 1.4; }
+    .banner a { color: #64b5f6; text-decoration: none; font-weight: 600; }
     .banner a:hover { text-decoration: underline; }
 
     /* --- Header bar --- */
@@ -55,12 +42,7 @@
       gap: 8px;
       flex-wrap: wrap;
     }
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-    }
+    .header-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
     .header-left span { font-size: 0.85rem; color: #aaa; white-space: nowrap; }
     #syncBtn {
       padding: 10px 16px;
@@ -78,187 +60,147 @@
     #syncBtn:disabled { opacity: 0.4; cursor: default; }
 
     /* --- Progress --- */
-    .progress-section {
-      width: 100%;
-      padding: 10px 16px 0;
-    }
-    .progress-info {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 4px;
-      font-size: 0.85rem;
-      color: #aaa;
-    }
-    .progress-bar-bg {
-      width: 100%;
-      height: 6px;
-      background: #2a2a4a;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    .progress-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #e94560, #0f3460);
-      transition: width 0.3s ease;
-      border-radius: 3px;
-    }
+    .progress-section { width: 100%; padding: 10px 16px 0; }
+    .progress-info { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 0.85rem; color: #aaa; }
+    .progress-bar-bg { width: 100%; height: 6px; background: #2a2a4a; border-radius: 3px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #e94560, #0f3460); transition: width 0.3s ease; border-radius: 3px; }
 
     /* --- Stats --- */
-    .stats {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      font-size: 0.8rem;
-      color: #888;
-      padding: 6px 16px;
-    }
+    .stats { display: flex; gap: 16px; justify-content: center; font-size: 0.8rem; color: #888; padding: 6px 16px; }
 
     /* --- Main content area --- */
-    .main-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+    .main-content { flex: 1; display: flex; flex-direction: column; min-height: 0; width: 100%; max-width: 1200px; margin: 0 auto; }
 
     /* --- Images --- */
-    .images-container {
-      display: flex;
-      gap: 8px;
-      padding: 4px 16px;
-      width: 100%;
-      flex: 1;
-      min-height: 0;
-    }
+    .images-container { display: flex; gap: 8px; padding: 4px 16px; width: 100%; flex: 1; min-height: 0; }
     .image-panel {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: #16213e;
-      border-radius: 8px;
-      padding: 8px;
-      border: 2px solid #0f3460;
-      min-width: 0;
-      overflow: hidden;
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      background: #16213e; border-radius: 8px; padding: 8px;
+      border: 2px solid #0f3460; min-width: 0; overflow: hidden;
     }
-    .image-panel h2 {
-      font-size: 0.85rem;
-      margin-bottom: 4px;
-      color: #e94560;
-    }
-    .image-panel img {
-      width: 100%;
-      max-height: 45vh;
-      object-fit: contain;
-      border-radius: 6px;
-      background: #0a0a1a;
-    }
+    .image-panel h2 { font-size: 0.85rem; margin-bottom: 4px; color: #e94560; }
+    .image-panel img { width: 100%; max-height: 45vh; object-fit: contain; border-radius: 6px; background: #0a0a1a; }
 
     /* --- Pair info --- */
-    .pair-info {
-      text-align: center;
-      padding: 4px 16px;
-      font-size: 0.75rem;
-      color: #666;
-      word-break: break-all;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+    .pair-info { text-align: center; padding: 4px 16px; font-size: 0.75rem; color: #666; word-break: break-all; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
     /* --- Controls --- */
-    .controls {
-      padding: 8px 16px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .label-row {
-      display: flex;
-      gap: 8px;
-      width: 100%;
-    }
+    .controls { padding: 8px 16px 12px; display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 1200px; margin: 0 auto; }
+    .label-row { display: flex; gap: 8px; width: 100%; }
     .label-btn {
-      flex: 1;
-      min-height: 52px;
-      font-size: 1rem;
-      font-weight: 700;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: transform 0.1s, box-shadow 0.1s;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      flex: 1; min-height: 52px; font-size: 1rem; font-weight: 700;
+      border: none; border-radius: 10px; cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s; color: #fff;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
-    .label-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 3px 10px rgba(0,0,0,0.4);
-    }
+    .label-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.4); }
     .label-btn:active { transform: translateY(0); }
     .btn-pass  { background: #2ecc71; }
     .btn-fail  { background: #e74c3c; }
     .btn-unsure { background: #f39c12; }
-    .label-btn .shortcut {
-      font-size: 0.65rem;
-      opacity: 0.7;
-      margin-top: 1px;
-    }
+    .label-btn .shortcut { font-size: 0.65rem; opacity: 0.7; margin-top: 1px; }
 
-    .nav-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      width: 100%;
-    }
+    .nav-row { display: flex; gap: 8px; align-items: center; width: 100%; }
     .nav-btn {
-      min-width: 52px;
-      min-height: 48px;
-      background: #2a2a4a;
-      color: #e0e0e0;
-      border: 1px solid #444;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.3rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      min-width: 52px; min-height: 48px; background: #2a2a4a; color: #e0e0e0;
+      border: 1px solid #444; border-radius: 8px; cursor: pointer;
+      font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; justify-content: center;
     }
     .nav-btn:hover:not(:disabled) { background: #3a3a5a; }
     .nav-btn:disabled { opacity: 0.25; cursor: default; }
 
-    .current-label {
-      flex: 1;
-      text-align: center;
-      padding: 6px 8px;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
+    .current-label { flex: 1; text-align: center; padding: 6px 8px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; }
     .current-label.pass  { background: #2ecc71; color: #fff; }
     .current-label.fail  { background: #e74c3c; color: #fff; }
     .current-label.unsure { background: #f39c12; color: #fff; }
     .current-label.none  { background: #444; color: #aaa; }
 
-    /* --- Done screen --- */
-    .done-screen {
-      display: none;
-      text-align: center;
-      padding: 48px 24px;
-    }
+    /* --- Done screen (submitting state) --- */
+    .done-screen { display: none; text-align: center; padding: 48px 24px; }
     .done-screen h2 { font-size: 1.6rem; color: #2ecc71; margin-bottom: 12px; }
     .done-screen p { color: #aaa; font-size: 0.9rem; }
+
+    /* --- Review screen --- */
+    .review-screen { display: none; flex-direction: column; width: 100%; max-width: 800px; margin: 0 auto; padding: 0 16px 24px; }
+
+    .score-hero { text-align: center; padding: 24px 0 16px; }
+    .score-pct { font-size: 3.5rem; font-weight: 800; line-height: 1; }
+    .score-pct.good { color: #2ecc71; }
+    .score-pct.ok { color: #f39c12; }
+    .score-pct.bad { color: #e74c3c; }
+    .score-sub { font-size: 0.95rem; color: #aaa; margin-top: 6px; }
+
+    .score-breakdown {
+      display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+      padding: 0 0 16px; font-size: 0.8rem;
+    }
+    .score-breakdown .chip {
+      padding: 4px 12px; border-radius: 20px; font-weight: 600;
+    }
+    .chip-pass { background: rgba(46,204,113,0.2); color: #2ecc71; }
+    .chip-fail { background: rgba(231,76,60,0.2); color: #e74c3c; }
+    .chip-unknown { background: rgba(243,156,18,0.2); color: #f39c12; }
+
+    .review-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex: 1; padding-bottom: 16px; }
+
+    .review-card {
+      display: flex; align-items: center; gap: 10px;
+      background: #16213e; border-radius: 10px; padding: 10px;
+      border: 1px solid #0f3460;
+    }
+    .review-card.mismatch { border-color: #e74c3c55; }
+    .review-card-thumb {
+      width: 56px; height: 56px; border-radius: 6px;
+      object-fit: cover; background: #0a0a1a; flex-shrink: 0;
+    }
+    .review-card-info { flex: 1; min-width: 0; }
+    .review-card-filename {
+      font-size: 0.8rem; font-weight: 600; color: #ddd;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .review-card-labels { font-size: 0.75rem; color: #999; margin-top: 2px; }
+    .review-card-labels span { font-weight: 600; }
+    .review-card-labels .lbl-pass { color: #2ecc71; }
+    .review-card-labels .lbl-fail { color: #e74c3c; }
+    .review-card-labels .lbl-unsure { color: #f39c12; }
+    .review-card-labels .lbl-unknown { color: #f39c12; }
+    .review-card-result { font-size: 1.3rem; flex-shrink: 0; width: 32px; text-align: center; }
+
+    .contest-btn {
+      min-height: 44px; min-width: 72px; padding: 8px 12px;
+      background: #e74c3c33; color: #e74c3c; border: 1px solid #e74c3c55;
+      border-radius: 8px; font-size: 0.75rem; font-weight: 700;
+      cursor: pointer; flex-shrink: 0;
+    }
+    .contest-btn:disabled { opacity: 0.4; cursor: default; }
+    .contest-btn.sent { background: #2ecc7133; color: #2ecc71; border-color: #2ecc7155; }
+
+    /* Contest modal */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+      z-index: 100; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: #16213e; border-radius: 12px; padding: 20px;
+      width: 100%; max-width: 400px; border: 2px solid #0f3460;
+    }
+    .modal-box h3 { font-size: 1rem; color: #e94560; margin-bottom: 8px; }
+    .modal-box p { font-size: 0.85rem; color: #aaa; margin-bottom: 12px; }
+    .modal-box textarea {
+      width: 100%; min-height: 100px; padding: 10px; border-radius: 8px;
+      border: 1px solid #444; background: #1a1a2e; color: #e0e0e0;
+      font-family: inherit; font-size: 0.9rem; resize: vertical;
+    }
+    .modal-box textarea:focus { outline: none; border-color: #e94560; }
+    .modal-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .modal-actions button {
+      flex: 1; min-height: 44px; border: none; border-radius: 8px;
+      font-size: 0.9rem; font-weight: 600; cursor: pointer;
+    }
+    .modal-cancel { background: #2a2a4a; color: #e0e0e0; }
+    .modal-submit { background: #e94560; color: #fff; }
+    .modal-submit:disabled { opacity: 0.4; cursor: default; }
 
     /* --- Desktop (>= 600px) --- */
     @media (min-width: 600px) {
@@ -278,6 +220,9 @@
       .nav-btn { min-width: 60px; min-height: 52px; font-size: 1.4rem; }
       .done-screen { padding: 60px; }
       .done-screen h2 { font-size: 2rem; }
+      .score-pct { font-size: 4.5rem; }
+      .review-screen { padding: 0 24px 24px; }
+      .review-card-thumb { width: 64px; height: 64px; }
     }
   </style>
 </head>
@@ -299,49 +244,50 @@
     <button id="syncBtn" onclick="syncToSheets()">Sync to Sheets</button>
   </header>
 
-  <div class="progress-section">
-    <div class="progress-info">
-      <span id="pairCounter">0 / 0</span>
-      <span id="datasetInfo"></span>
-    </div>
-    <div class="progress-bar-bg">
-      <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
-    </div>
-  </div>
-
-  <div class="stats" id="stats"></div>
-
-  <div class="main-content">
-    <div class="images-container" id="imagesContainer">
-      <div class="image-panel">
-        <h2>Left</h2>
-        <img id="leftImg" alt="Left camera image">
+  <div id="labelingUI">
+    <div class="progress-section">
+      <div class="progress-info">
+        <span id="pairCounter">0 / 0</span>
+        <span id="datasetInfo"></span>
       </div>
-      <div class="image-panel">
-        <h2>Right</h2>
-        <img id="rightImg" alt="Right camera image">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
       </div>
     </div>
 
-    <div class="pair-info" id="pairInfo"></div>
-  </div>
+    <div class="stats" id="stats"></div>
 
-  <div class="controls">
-    <div class="label-row">
-      <button class="label-btn btn-pass" onclick="submitLabel('pass')">
-        Pass<span class="shortcut">[P]</span>
-      </button>
-      <button class="label-btn btn-fail" onclick="submitLabel('fail')">
-        Fail<span class="shortcut">[F]</span>
-      </button>
-      <button class="label-btn btn-unsure" onclick="submitLabel('unsure')">
-        Unsure<span class="shortcut">[U]</span>
-      </button>
+    <div class="main-content">
+      <div class="images-container" id="imagesContainer">
+        <div class="image-panel">
+          <h2>Left</h2>
+          <img id="leftImg" alt="Left camera image">
+        </div>
+        <div class="image-panel">
+          <h2>Right</h2>
+          <img id="rightImg" alt="Right camera image">
+        </div>
+      </div>
+      <div class="pair-info" id="pairInfo"></div>
     </div>
-    <div class="nav-row">
-      <button class="nav-btn" id="prevBtn" onclick="goBack()" disabled>&lsaquo;</button>
-      <span class="current-label none" id="currentLabel">No label</span>
-      <button class="nav-btn" id="nextBtn" onclick="goNext()">&rsaquo;</button>
+
+    <div class="controls">
+      <div class="label-row">
+        <button class="label-btn btn-pass" onclick="submitLabel('pass')">
+          Pass<span class="shortcut">[P]</span>
+        </button>
+        <button class="label-btn btn-fail" onclick="submitLabel('fail')">
+          Fail<span class="shortcut">[F]</span>
+        </button>
+        <button class="label-btn btn-unsure" onclick="submitLabel('unsure')">
+          Unsure<span class="shortcut">[U]</span>
+        </button>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn" id="prevBtn" onclick="goBack()" disabled>&lsaquo;</button>
+        <span class="current-label none" id="currentLabel">No label</span>
+        <button class="nav-btn" id="nextBtn" onclick="goNext()">&rsaquo;</button>
+      </div>
     </div>
   </div>
 
@@ -350,11 +296,34 @@
     <p id="doneMessage">Sending labels to Google Sheets.</p>
   </div>
 
+  <div class="review-screen" id="reviewScreen">
+    <div class="score-hero">
+      <div class="score-pct" id="scorePct"></div>
+      <div class="score-sub" id="scoreSub"></div>
+    </div>
+    <div class="score-breakdown" id="scoreBreakdown"></div>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+
+  <!-- Contest modal -->
+  <div class="modal-overlay" id="contestModal">
+    <div class="modal-box">
+      <h3>Contest this label</h3>
+      <p id="contestFilename"></p>
+      <textarea id="contestReason" placeholder="Why do you disagree with the ground truth label?"></textarea>
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="closeContestModal()">Cancel</button>
+        <button class="modal-submit" id="contestSubmitBtn" onclick="submitContest()">Submit</button>
+      </div>
+    </div>
+  </div>
+
 <script>
   const STORAGE_KEY = 'pose_calibration_labels';
   let pairs = [];
   let labels = {};
   let currentIndex = 0;
+  let contestTarget = null;
 
   function loadLabels() {
     try {
@@ -381,6 +350,14 @@
 
   function pairKey(pair) {
     return `${pair.dataset}/${pair.split}/${pair.filename}`;
+  }
+
+  function groundTruth(filename) {
+    const lower = filename.toLowerCase();
+    if (lower.startsWith('pass')) return 'pass';
+    if (lower.startsWith('fail')) return 'fail';
+    if (lower.startsWith('unknown')) return 'unknown';
+    return null;
   }
 
   function render() {
@@ -453,6 +430,8 @@
   async function autoSyncOnComplete() {
     const titleEl = document.getElementById('doneTitle');
     const msgEl = document.getElementById('doneMessage');
+    document.getElementById('labelingUI').style.display = 'none';
+    document.getElementById('doneScreen').style.display = 'block';
     titleEl.textContent = 'Submitting...';
     titleEl.style.color = '#f39c12';
     msgEl.textContent = 'Sending labels to Google Sheets.';
@@ -477,6 +456,160 @@
       titleEl.textContent = 'Sync failed';
       titleEl.style.color = '#e74c3c';
       msgEl.textContent = err.message;
+    }
+
+    // Show review screen after a brief pause
+    setTimeout(() => {
+      document.getElementById('doneScreen').style.display = 'none';
+      showReviewScreen();
+    }, 2000);
+  }
+
+  function showReviewScreen() {
+    document.getElementById('labelingUI').style.display = 'none';
+    document.getElementById('doneScreen').style.display = 'none';
+    const screen = document.getElementById('reviewScreen');
+    screen.style.display = 'flex';
+
+    // Build results
+    let correct = 0;
+    let total = 0;
+    const correctByType = { pass: 0, fail: 0, unknown: 0 };
+    const totalByType = { pass: 0, fail: 0, unknown: 0 };
+    const results = [];
+
+    for (const pair of pairs) {
+      const key = pairKey(pair);
+      const entry = labels[key];
+      if (!entry) continue;
+
+      const truth = groundTruth(pair.filename);
+      if (!truth) continue;
+
+      total++;
+      totalByType[truth] = (totalByType[truth] || 0) + 1;
+
+      // "unsure" counts as incorrect; "unknown" in filename matches "unsure" — no, unknown matches unknown
+      // truth is pass/fail/unknown; user label is pass/fail/unsure
+      // Match: pass==pass, fail==fail, unknown has no correct user answer (unsure counts as incorrect)
+      const isMatch = entry.label === truth;
+      if (isMatch) {
+        correct++;
+        correctByType[truth] = (correctByType[truth] || 0) + 1;
+      }
+
+      results.push({
+        pair,
+        entry,
+        truth,
+        userLabel: entry.label,
+        isMatch,
+      });
+    }
+
+    const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+    const pctEl = document.getElementById('scorePct');
+    pctEl.textContent = `${pct}% Match`;
+    pctEl.className = 'score-pct ' + (pct >= 80 ? 'good' : pct >= 50 ? 'ok' : 'bad');
+
+    document.getElementById('scoreSub').textContent =
+      `${correct} of ${total} correct`;
+
+    // Breakdown chips
+    const breakdownEl = document.getElementById('scoreBreakdown');
+    breakdownEl.innerHTML = '';
+    for (const type of ['pass', 'fail', 'unknown']) {
+      if (totalByType[type] > 0) {
+        const chip = document.createElement('span');
+        chip.className = `chip chip-${type}`;
+        chip.textContent = `${type}: ${correctByType[type] || 0}/${totalByType[type]}`;
+        breakdownEl.appendChild(chip);
+      }
+    }
+
+    // Card list
+    const listEl = document.getElementById('reviewList');
+    listEl.innerHTML = '';
+
+    for (const r of results) {
+      const card = document.createElement('div');
+      card.className = 'review-card' + (r.isMatch ? '' : ' mismatch');
+
+      const truthClass = `lbl-${r.truth}`;
+      const userClass = `lbl-${r.userLabel}`;
+
+      card.innerHTML = `
+        <img class="review-card-thumb" src="${r.pair.left_url}" alt="${r.pair.filename}">
+        <div class="review-card-info">
+          <div class="review-card-filename">${r.pair.filename}</div>
+          <div class="review-card-labels">
+            Truth: <span class="${truthClass}">${r.truth}</span>
+            &nbsp;|&nbsp;
+            Yours: <span class="${userClass}">${r.userLabel}</span>
+          </div>
+        </div>
+        <div class="review-card-result">${r.isMatch ? '<span style="color:#2ecc71">&#10003;</span>' : '<span style="color:#e74c3c">&#10007;</span>'}</div>
+      `;
+
+      if (!r.isMatch) {
+        const btn = document.createElement('button');
+        btn.className = 'contest-btn';
+        btn.textContent = 'Contest';
+        btn.dataset.filename = r.entry.filename;
+        btn.dataset.timestamp = r.entry.timestamp;
+        btn.onclick = () => openContestModal(btn, r.entry.filename, r.entry.timestamp);
+        card.appendChild(btn);
+      }
+
+      listEl.appendChild(card);
+    }
+  }
+
+  function openContestModal(btn, filename, timestamp) {
+    contestTarget = { btn, filename, timestamp };
+    document.getElementById('contestFilename').textContent = filename;
+    document.getElementById('contestReason').value = '';
+    document.getElementById('contestModal').classList.add('active');
+  }
+
+  function closeContestModal() {
+    document.getElementById('contestModal').classList.remove('active');
+    contestTarget = null;
+  }
+
+  async function submitContest() {
+    if (!contestTarget) return;
+    const reason = document.getElementById('contestReason').value.trim();
+    if (!reason) return;
+
+    const submitBtn = document.getElementById('contestSubmitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
+    try {
+      const res = await fetch('/api/contest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          filename: contestTarget.filename,
+          timestamp: contestTarget.timestamp,
+          reason
+        })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        contestTarget.btn.textContent = 'Sent';
+        contestTarget.btn.className = 'contest-btn sent';
+        contestTarget.btn.disabled = true;
+        closeContestModal();
+      } else {
+        alert('Failed: ' + data.error);
+      }
+    } catch (err) {
+      alert('Error: ' + err.message);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit';
     }
   }
 
@@ -506,17 +639,11 @@
   }
 
   function goBack() {
-    if (currentIndex > 0) {
-      currentIndex--;
-      render();
-    }
+    if (currentIndex > 0) { currentIndex--; render(); }
   }
 
   function goNext() {
-    if (currentIndex < pairs.length - 1) {
-      currentIndex++;
-      render();
-    }
+    if (currentIndex < pairs.length - 1) { currentIndex++; render(); }
   }
 
   document.addEventListener('keydown', (e) => {

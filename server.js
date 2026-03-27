@@ -67,6 +67,8 @@ function buildPairs() {
 
 // --- Google Sheets ---
 
+const COLUMNS = ['filename', 'dataset', 'split', 'label', 'timestamp', 'contested', 'contest_reason'];
+
 async function getSheetsClient() {
   const keyJson = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
   const keyPath = process.env.GOOGLE_SERVICE_ACCOUNT_KEY_PATH;
@@ -95,25 +97,24 @@ async function appendToGoogleSheet(rows) {
   if (!sheetId) throw new Error('SHEET_ID not set');
 
   const sheets = await getSheetsClient();
-  const columns = ['filename', 'dataset', 'split', 'label', 'timestamp'];
 
   const existing = await sheets.spreadsheets.values.get({
     spreadsheetId: sheetId,
-    range: 'Sheet1!A1:E1',
+    range: 'Sheet1!A1:G1',
   });
 
   const values = [];
   if (!existing.data.values || existing.data.values.length === 0) {
-    values.push(columns);
+    values.push(COLUMNS);
   }
 
   for (const r of rows) {
-    values.push(columns.map(c => r[c] || ''));
+    values.push(COLUMNS.map(c => r[c] || ''));
   }
 
   await sheets.spreadsheets.values.append({
     spreadsheetId: sheetId,
-    range: 'Sheet1!A:E',
+    range: 'Sheet1!A:G',
     valueInputOption: 'RAW',
     insertDataOption: 'INSERT_ROWS',
     requestBody: { values },
@@ -140,6 +141,55 @@ app.post('/api/sync-sheets', async (req, res) => {
     res.json({ ok: true, rowsAppended: count });
   } catch (err) {
     console.error('Google Sheets sync error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/contest', async (req, res) => {
+  try {
+    const { filename, timestamp, reason } = req.body;
+    if (!filename || !timestamp || !reason) {
+      return res.status(400).json({ error: 'filename, timestamp, and reason required' });
+    }
+
+    const sheetId = process.env.SHEET_ID;
+    if (!sheetId) throw new Error('SHEET_ID not set');
+
+    const sheets = await getSheetsClient();
+
+    // Read all rows to find the matching one
+    const data = await sheets.spreadsheets.values.get({
+      spreadsheetId: sheetId,
+      range: 'Sheet1!A:G',
+    });
+
+    const rows = data.data.values || [];
+    let matchRow = -1;
+    for (let i = 1; i < rows.length; i++) {
+      // Column A = filename, Column E = timestamp
+      if (rows[i][0] === filename && rows[i][4] === timestamp) {
+        matchRow = i + 1; // 1-indexed for Sheets API
+        break;
+      }
+    }
+
+    if (matchRow === -1) {
+      return res.status(404).json({ error: 'Row not found in sheet' });
+    }
+
+    // Update columns F (contested) and G (contest_reason)
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: sheetId,
+      range: `Sheet1!F${matchRow}:G${matchRow}`,
+      valueInputOption: 'RAW',
+      requestBody: {
+        values: [['yes', reason]],
+      },
+    });
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('Contest error:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
